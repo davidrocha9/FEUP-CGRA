@@ -126,62 +126,6 @@ class MyScene extends CGFscene {
         this.material3.setSpecular(1, 0, 0, 1.0);
         this.material3.setShininess(10.0);
 
-        // Wood
-        this.material4 = new CGFappearance(this);
-        this.material4.setAmbient(0.0, 0.0, 0.0, 1.0);
-        this.material4.setDiffuse(193/255, 154/255, 107/255, 1.0); 
-        this.material4.setSpecular(0.0, 0.0, 0.0, 1.0);
-        this.material4.setShininess(10.0);
-
-        // Green
-        this.material5 = new CGFappearance(this);
-        this.material5.setAmbient(0,1*0.5,0,1.0);
-        this.material5.setDiffuse(0,1*0.7,0,1.0);
-        this.material5.setSpecular(0,1,0,1.0);
-        this.material5.setShininess(10.0);
-
-        //Pink
-        this.material6 = new CGFappearance(this);
-        this.material6.setAmbient(1*0.5,0.714*0.5,0.757*0.5,1.0);
-        this.material6.setDiffuse(1*0.7,0.714*0.7,0.757*0.7,1.0);
-        this.material6.setSpecular(1,0.714,0.757,1.0);
-        this.material6.setShininess(10.0);
-
-        //Red
-        this.material7 = new CGFappearance(this);
-        this.material7.setAmbient(1*0.5,0,0,1.0);
-        this.material7.setDiffuse(1*0.7,0,0,1.0);
-        this.material7.setSpecular(1,0,0,1.0);
-        this.material7.setShininess(10.0);1
-
-        //Yellow
-        this.material8 = new CGFappearance(this);
-        this.material8.setAmbient(1*0.5,1*0.5,0,1.0);
-        this.material8.setDiffuse(1*0.7,1*0.7,0,1.0);
-        this.material8.setSpecular(1,1,0,1.0);
-        this.material8.setShininess(10.0);
-
-        //Orange
-        this.material9 = new CGFappearance(this);
-        this.material9.setAmbient(1*0.5,0.647*0.5,0,1.0);
-        this.material9.setDiffuse(1*0.7,0.647*0.7,0,1.0);
-        this.material9.setSpecular(1,0.647,0,1.0);
-        this.material9.setShininess(10.0);
-
-        //Blue
-        this.material10 = new CGFappearance(this);
-        this.material10.setAmbient(0,0.749*0.5,1*0.5,1.0);
-        this.material10.setDiffuse(0,0.749*0.7,1*0.7,1.0);
-        this.material10.setSpecular(0,0.749,1,1.0);
-        this.material10.setShininess(10.0);
-
-        //Purple
-        this.material11 = new CGFappearance(this);
-        this.material11.setAmbient(0.58*0.5,0,0.827*0.5,1.0);
-        this.material11.setDiffuse(0.58*0.7,0,0.827*0.7,1.0);
-        this.material11.setSpecular(0.58,0,0.827,1.0);
-        this.material11.setShininess(10.0);
-
         // Custom material (can be changed in the interface)
         // initially midrange values on ambient, diffuse and specular, on R, G and B respectively
 
@@ -195,7 +139,7 @@ class MyScene extends CGFscene {
 
         this.updateCustomMaterial();
 
-        this.materials = [this.material1, this.material2, this.material3, this.material4, this.material5, this.material6, this.material7, this.material8, this.material9, this.material10, this.material11, this.customMaterial];
+        this.materials = [this.material1, this.material2, this.material3, this.customMaterial];
 
         // Labels and ID's for object selection on MyInterface
         this.materialIDs = {'Red Ambient': 0, 'Red Diffuse': 1, 'Red Specular': 2, 'Wood' : 3, 'Custom': 4 };
