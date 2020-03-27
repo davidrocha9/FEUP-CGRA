@@ -60,7 +60,7 @@ class MyTangram extends CGFobject {
         this.scene.translate(-3,1,0);
         this.scene.rotate(-3*Math.PI/4,0,0,1);
         this.scene.scale(sqrt, sqrt, sqrt);
-        this.triangle.updateTexCoords([1, 0, 0.5, 0.5, 1, 1]); 
+        this.triangle.updateTexCoords([0, 0.5, 0, 1, 0.5, 1]);
         this.triangle.display();
         this.scene.popMatrix();
 
@@ -68,7 +68,7 @@ class MyTangram extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(-2,-2,0);
         this.scene.rotate(Math.PI,0,0,1);
-        this.triangle.updateTexCoords([0, 0, 0.5, 0.5, 1, 0]);
+        this.triangle.updateTexCoords([0.25, 0.75, 0.5, 0.5, 0.75, 0.75]);
         this.triangle.display();
         this.scene.popMatrix();
          
@@ -85,7 +85,7 @@ class MyTangram extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(1,-1,0);
         this.scene.scale(2,2,2);
-        this.triangle.updateTexCoords([0, 0.5, 0.25, 0.75, 0.5, 0.5]); 
+        this.triangle.updateTexCoords([1, 0, 0.5, 0.5, 1, 1]); 
         this.triangle.display();
         this.scene.popMatrix();
 
@@ -94,7 +94,7 @@ class MyTangram extends CGFobject {
         this.scene.translate(3,0,0);
         this.scene.rotate(Math.PI/4,0,0,1);
         this.scene.scale(2.13,2.13,2.13);
-        this.triangle.updateTexCoords([0.25, 0.75, 0.75, 0.75, 0.5, 0.5]); 
+        this.triangle.updateTexCoords([0, 0, 0.5, 0.5, 1, 0]);
         this.triangle.display();
         this.scene.popMatrix();
         
@@ -102,7 +102,7 @@ class MyTangram extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(5,1,0);
         this.scene.rotate(Math.PI/2,0,0,1);
-        this.triangle.updateTexCoords([0, 0, 0, 0.5, 0.25, 0.25]);
+        this.triangle.updateTexCoords([0, 0.5, 0.25, 0.25, 0, 0]);
         this.triangle.display();
         this.scene.popMatrix();
 
