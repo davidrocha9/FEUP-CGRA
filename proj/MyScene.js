@@ -27,7 +27,7 @@ class MyScene extends CGFscene {
         this.axis = new CGFaxis(this);
         this.sphere = new MySphere(this, 16, 8);
         this.cylinder = new MyCylinder(this, 16);
-        this.cube = new MyUnitCubeQuad(this);
+        this.cube = new MyCubeQuad(this);
         this.vehicle = new MyVehicle(this, 4, 8);
 
         this.objects = [this.sphere, this.cylinder, this.cube, this.vehicle];
@@ -36,18 +36,19 @@ class MyScene extends CGFscene {
 
         //Objects connected to MyInterface
         this.displayAxis = true;
-        this.selectedObject = 3;
+        this.displayObject = true;
+        this.selectedObject = 0;
         this.selectedTexture = 0;
 
         //Earth Material for the Sphere
-        this.earthMaterial = new CGFappearance(this);
-        this.earthMaterial.setAmbient(0.1, 0.1, 0.1, 1);
-        this.earthMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-        this.earthMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-        this.earthMaterial.setShininess(10.0);
-        this.earthMaterial.loadTexture("images/earth.jpg");
-        this.earthMaterial.setTextureWrap("REPEAT", "REPEAT");
-        
+        this.sceneMaterial = new CGFappearance(this);
+        this.sceneMaterial.setAmbient(0.1, 0.1, 0.1, 1);
+        this.sceneMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+        this.sceneMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+        this.sceneMaterial.setShininess(10.0);
+        this.sceneMaterial.loadTexture("images/earth.jpg");
+        this.sceneMaterial.setTextureWrap("REPEAT", "REPEAT");
+
         this.textureList={
             'Cubemap':0,
             'Forest':1,
@@ -75,22 +76,22 @@ class MyScene extends CGFscene {
         // Check for key codes e.g. in https://keycode.info/
         if(this.gui.isKeyPressed("KeyW")){
             text+=" W ";
-            this.objects[3].accelerate(1);
+            this.objects[3].accelerate(0.7);
             keysPressed=true;
         }
         if(this.gui.isKeyPressed("KeyS")){
             text+=" S ";
-            this.objects[3].accelerate(-1);
+            this.objects[3].accelerate(-0.7);
             keysPressed=true;
         }
         if(this.gui.isKeyPressed("KeyA")){
             text+=" A ";
-            this.objects[3].turn(-2);
+            this.objects[3].turn(-20);
             keysPressed=true;
         }
         if(this.gui.isKeyPressed("KeyD")){
             text+=" D ";
-            this.objects[3].turn(2);
+            this.objects[3].turn(20);
             keysPressed=true;
         }
         if (this.gui.isKeyPressed("KeyR")) {
@@ -136,13 +137,12 @@ class MyScene extends CGFscene {
         this.setDefaultAppearance();
 
         // ---- BEGIN Primitive drawing section
+        
         this.pushMatrix();
-        this.earthMaterial.apply();
-        this.objects[this.selectedObject].display();
+        this.sceneMaterial.apply();
+        if (this.displayObject)
+            this.objects[this.selectedObject].display();
         this.popMatrix();
-        //this.sphere.display();
-        //This sphere does not have defined texture coordinates
-        //this.objects[this.selectedObject].display();
 
         // ---- END Primitive drawing section
     }

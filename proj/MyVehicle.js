@@ -9,9 +9,11 @@ class MyVehicle extends CGFobject {
         this.stacks = stacks;
         this.initBuffers();
 
-        this.ang=0;
+        this.vehicleAngle=0;
         this.speed=0;
-        this.x=0;this.y=0;this.z=0;
+        this.x=0;
+        this.y=0;
+        this.z=0;
     }
     initBuffers() {
         this.vertices = [];
@@ -75,31 +77,30 @@ class MyVehicle extends CGFobject {
     }
 
     update(){
-        this.x += this.speed * Math.sin(this.ang*Math.PI/180);
-        this.z += this.speed * Math.cos(this.ang*Math.PI/180);
+        this.x += this.speed * Math.sin(this.vehicleAngle*Math.PI/180);
+        this.z += this.speed * Math.cos(this.vehicleAngle*Math.PI/180);
     }
 
-    turn(v) {
-        this.ang += v;
+    turn(angle) {
+        this.vehicleAngle += angle;
     }
 
-    accelerate(v) {
-        this.speed = v;
+    accelerate(acceleration) {
+        this.speed = acceleration;
     }
 
     reset() {
         this.x = 0;
-        this.y = 0;
         this.z = 0;
+        this.vehicleAngle = 0;
         this.speed = 0;
-        this.ang = 0;
     }
     
     display(){
         this.scene.pushMatrix();
 
         this.scene.translate(this.x, this.y, this.z);
-        this.scene.rotate(this.ang*Math.PI/180.0, 0, 1, 0);
+        this.scene.rotate(this.vehicleAngle*Math.PI/180.0, 0, 1, 0);
 
         this.scene.translate(0,0,-1);
         this.scene.rotate(90.0*Math.PI/180.0, 1, 0, 0);
