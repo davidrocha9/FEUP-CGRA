@@ -82,11 +82,16 @@ class MyVehicle extends CGFobject {
     }
 
     turn(angle) {
-        this.vehicleAngle += angle;
+        if (this.speed < 0){
+            this.vehicleAngle -= angle;
+        }
+        else{
+            this.vehicleAngle += angle;
+        }
     }
 
     accelerate(acceleration) {
-        this.speed = acceleration;
+        this.speed += acceleration;
     }
 
     reset() {
@@ -98,6 +103,9 @@ class MyVehicle extends CGFobject {
     
     display(){
         this.scene.pushMatrix();
+        
+        this.scene.defaultMaterial.apply();
+        this.scene.scale(this.scene.scaleFactor,this.scene.scaleFactor,this.scene.scaleFactor);
 
         this.scene.translate(this.x, this.y, this.z);
         this.scene.rotate(this.vehicleAngle*Math.PI/180.0, 0, 1, 0);
@@ -109,6 +117,12 @@ class MyVehicle extends CGFobject {
         this.scene.popMatrix();
     }
 
-    
+    updateBuffers(complexity){
+        this.slices = 3 + Math.round(9 * complexity); //complexity varies 0-1, so slices varies 3-12
+
+        // reinitialize buffers
+        this.initBuffers();
+        this.initNormalVizBuffers();
+    }
 
 }

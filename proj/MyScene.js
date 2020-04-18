@@ -30,15 +30,19 @@ class MyScene extends CGFscene {
         this.cube = new MyCubeQuad(this);
         this.vehicle = new MyVehicle(this, 4, 8);
 
-        this.objects = [this.sphere, this.cylinder, this.cube, this.vehicle];
+        this.objects = [this.sphere, this.cylinder, this.vehicle];
 
-        this.objectsID = {'Sphere': 0, 'Cylinder': 1, 'Cube': 2, 'Vehicle': 3};
+        this.objectsID = {'Sphere': 0, 'Cylinder': 1, 'Vehicle': 2};
 
         //Objects connected to MyInterface
         this.displayAxis = true;
+        this.displayEarth = false;
         this.displayObject = true;
-        this.selectedObject = 0;
+        this.displayCubeMap = true;
+        this.selectedObject = 0 ;
         this.selectedTexture = 0;
+        this.speedFactor = 1;
+        this.scaleFactor = 1;
 
         //Earth Material for the Sphere
         this.sceneMaterial = new CGFappearance(this);
@@ -48,11 +52,25 @@ class MyScene extends CGFscene {
         this.sceneMaterial.setShininess(10.0);
         this.sceneMaterial.loadTexture("images/earth.jpg");
         this.sceneMaterial.setTextureWrap("REPEAT", "REPEAT");
+        
+        this.textures = [
+            new CGFtexture(this, "images/earth.jpg"),
+            new CGFtexture(this, "images/cubemap.png"),
+            new CGFtexture(this, "images/forest.png"),
+            new CGFtexture(this, "images/desert.png"),
+        ];
 
         this.textureList={
-            'Cubemap':0,
-            'Forest':1,
+            'Cubemap': 0,
+            'Forest': 1,
+            'Desert': 2,
         };
+
+        this.defaultMaterial = new CGFappearance(this);
+        this.defaultMaterial.setAmbient(0.2, 0.4, 0.8, 1.0);
+        this.defaultMaterial.setDiffuse(0.2, 0.4, 0.8, 1.0);
+        this.defaultMaterial.setSpecular(0.2, 0.4, 0.8, 1.0);
+        this.defaultMaterial.setShininess(10.0);
     }
     initLights() {
         this.lights[0].setPosition(15, 2, 5, 1);
@@ -76,33 +94,33 @@ class MyScene extends CGFscene {
         // Check for key codes e.g. in https://keycode.info/
         if(this.gui.isKeyPressed("KeyW")){
             text+=" W ";
-            this.objects[3].accelerate(0.7);
+            this.objects[2].accelerate(0.3*this.speedFactor);
             keysPressed=true;
         }
         if(this.gui.isKeyPressed("KeyS")){
             text+=" S ";
-            this.objects[3].accelerate(-0.7);
+            this.objects[2].accelerate(-0.3*this.speedFactor);
             keysPressed=true;
         }
         if(this.gui.isKeyPressed("KeyA")){
             text+=" A ";
-            this.objects[3].turn(-20);
+            this.objects[2].turn(-20);
             keysPressed=true;
         }
         if(this.gui.isKeyPressed("KeyD")){
             text+=" D ";
-            this.objects[3].turn(20);
+            this.objects[2].turn(20);
             keysPressed=true;
         }
         if (this.gui.isKeyPressed("KeyR")) {
             text+=" R "
-            this.objects[3].reset();
+            this.objects[2].reset();
             keysPressed = true;
         }
-
+        
+        this.objects[2].update();
         if(keysPressed){
             console.log(text);
-            this.objects[3].update();
         }
     }
 
@@ -112,7 +130,7 @@ class MyScene extends CGFscene {
     }
     
     updateTexture(){
-        this.objects[2].updateTexture();
+        this.cube.updateTexture();
     }
 
     updateObject(){
@@ -139,11 +157,14 @@ class MyScene extends CGFscene {
         // ---- BEGIN Primitive drawing section
         
         this.pushMatrix();
-        this.sceneMaterial.apply();
         if (this.displayObject)
             this.objects[this.selectedObject].display();
         this.popMatrix();
+        
+         if (this.displayCubeMap == true)
+            this.cube.display();
 
+  
         // ---- END Primitive drawing section
     }
 }

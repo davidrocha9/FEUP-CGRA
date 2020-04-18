@@ -73,7 +73,7 @@ class MyCubeQuad extends CGFobject {
         this.scene.translate(0,0,0.5);
         this.quad.display();
         this.scene.popMatrix();
-        
+      
         this.quadBack.apply();
         //this.scene.gl.texParameteri(this.scene.gl.TEXTURE_2D, this.scene.gl.TEXTURE_MAG_FILTER, this.scene.gl.NEAREST);
         this.scene.pushMatrix();
@@ -132,6 +132,14 @@ class MyCubeQuad extends CGFobject {
             this.quadBack.loadTexture('images/split_forest/back.png');
             this.quadTop.loadTexture('images/split_forest/top.png');
             this.quadBottom.loadTexture('images/split_forest/bottom.png');
+        }
+        else if(this.scene.selectedTexture==2){
+            this.quadLeft.loadTexture('images/split_desert/left.png');
+            this.quadRight.loadTexture('images/split_desert/right.png');
+            this.quadFront.loadTexture('images/split_desert/front.png');
+            this.quadBack.loadTexture('images/split_desert/back.png');
+            this.quadTop.loadTexture('images/split_desert/top.png');
+            this.quadBottom.loadTexture('images/split_desert/bottom.png');
         }
     }
 }
