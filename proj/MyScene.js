@@ -10,6 +10,9 @@ class MyScene extends CGFscene {
         super.init(application);
         this.initCameras();
         this.initLights();
+        
+        this.slices = 16;
+        this.stacks = 8;
 
         //Background color
         this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -28,8 +31,18 @@ class MyScene extends CGFscene {
         this.sphere = new MySphere(this, 16, 8);
         this.cylinder = new MyCylinder(this, 16);
         this.cube = new MyCubeQuad(this);
-        this.vehicle = new MyVehicle(this, 4, 8);
+        this.vehicle = new MyVehicle(this, this.slices, this.stacks);
+        this.terrain=new MyTerrain(this);
+        this.supplies = [
+            new MySupply(this),
+            new MySupply(this),
+            new MySupply(this),
+            new MySupply(this),
+            new MySupply(this),
+        ];
+        this.supplyNumber = 0;
 
+        
         this.objects = [this.sphere, this.cylinder, this.vehicle];
 
         this.objectsID = {'Sphere': 0, 'Cylinder': 1, 'Vehicle': 2};
@@ -39,10 +52,10 @@ class MyScene extends CGFscene {
         this.displayEarth = false;
         this.displayObject = true;
         this.displayCubeMap = true;
-        this.selectedObject = 0 ;
+        this.selectedObject = 2;
         this.selectedTexture = 0;
         this.speedFactor = 1;
-        this.scaleFactor = 1;
+        this.scaleFactor = 0.5;
 
         //Earth Material for the Sphere
         this.sceneMaterial = new CGFappearance(this);
@@ -73,13 +86,16 @@ class MyScene extends CGFscene {
         this.defaultMaterial.setShininess(10.0);
     }
     initLights() {
+        this.setGlobalAmbientLight(0.5, 0.5, 0.5, 1.0);
+        
         this.lights[0].setPosition(15, 2, 5, 1);
         this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
         this.lights[0].enable();
         this.lights[0].update();
     }
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+        //this.camera = new CGFcamera(0.5, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
+        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(40, 64, 40), vec3.fromValues(0, 24, 0));
     }
     setDefaultAppearance() {
         this.setAmbient(0.2, 0.4, 0.8, 1.0);
@@ -92,33 +108,60 @@ class MyScene extends CGFscene {
         var keysPressed=false;
 
         // Check for key codes e.g. in https://keycode.info/
-        if(this.gui.isKeyPressed("KeyW")){
-            text+=" W ";
-            this.objects[2].accelerate(0.3*this.speedFactor);
-            keysPressed=true;
-        }
-        if(this.gui.isKeyPressed("KeyS")){
-            text+=" S ";
-            this.objects[2].accelerate(-0.3*this.speedFactor);
-            keysPressed=true;
-        }
-        if(this.gui.isKeyPressed("KeyA")){
-            text+=" A ";
-            this.objects[2].turn(-20);
-            keysPressed=true;
-        }
-        if(this.gui.isKeyPressed("KeyD")){
-            text+=" D ";
-            this.objects[2].turn(20);
-            keysPressed=true;
-        }
-        if (this.gui.isKeyPressed("KeyR")) {
-            text+=" R "
-            this.objects[2].reset();
+        if (this.gui.isKeyPressed("KeyP")) {
+            text+=" P "
+            this.vehicle.autoPilot();
             keysPressed = true;
         }
         
-        this.objects[2].update();
+        if (!this.vehicle.autopilot){
+            if(this.gui.isKeyPressed("KeyW")){
+                text+=" W ";
+                this.objects[2].accelerate(0.3*this.speedFactor);
+                keysPressed=true;
+            }
+            if(this.gui.isKeyPressed("KeyS")){
+                text+=" S ";
+                this.objects[2].accelerate(-0.3*this.speedFactor);
+                keysPressed=true;
+            }
+            else if(this.gui.isKeyPressed("KeyA")){
+                text+=" A ";
+                this.objects[2].turn(-20);
+                keysPressed=true;
+            }
+            else if(this.gui.isKeyPressed("KeyD")){
+                text+=" D ";
+                this.objects[2].turn(20);
+                keysPressed=true;
+            }
+            else{
+                this.vehicle.blimp.stabilizer1.setAngle(0);
+                this.vehicle.blimp.stabilizer2.setAngle(0);
+            }
+        }
+        if (this.gui.isKeyPressed("KeyR")) {
+            text+=" R ";
+            this.objects[2].reset();
+            keysPressed = true;
+            this.vehicle.autopilot = false;
+            for (var i=0 ; i<5; i++){
+                this.supplies[i].y = 10;
+                this.supplies[i].state = SupplyStates.INACTIVE;
+            }
+            this.supplyNumber = 0;
+        }
+
+        if (this.gui.isKeyPressed("KeyL")) {
+            text+=" L ";
+            if (this.supplyNumber < 5){
+                this.supplies[this.supplyNumber].drop(this.vehicle.x, this.vehicle.z);
+                this.supplies[this.supplyNumber].display();
+                this.supplyNumber++;
+            }
+            keysPressed = true;
+        }
+        
         if(keysPressed){
             console.log(text);
         }
@@ -126,7 +169,11 @@ class MyScene extends CGFscene {
 
     // called periodically (as per setUpdatePeriod() in init())
     update(t){
-        this.checkKeys();
+        this.checkKeys(t);
+        this.vehicle.update(t);
+        for (var i=0 ; i<5; i++){
+            this.supplies[i].update(t);
+        }
     }
     
     updateTexture(){
@@ -155,6 +202,8 @@ class MyScene extends CGFscene {
         this.setDefaultAppearance();
 
         // ---- BEGIN Primitive drawing section
+        this.pushMatrix();    
+        this.translate(0,24,0);
         
         this.pushMatrix();
         if (this.displayObject)
@@ -164,7 +213,13 @@ class MyScene extends CGFscene {
          if (this.displayCubeMap == true)
             this.cube.display();
 
-  
+        this.terrain.display();
+
+        for (var i=0 ; i<5; i++){
+            this.supplies[i].display();
+        }
+        
+        this.popMatrix();
         // ---- END Primitive drawing section
     }
 }

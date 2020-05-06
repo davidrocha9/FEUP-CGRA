@@ -14,58 +14,17 @@ class MyVehicle extends CGFobject {
         this.x=0;
         this.y=0;
         this.z=0;
-    }
-    initBuffers() {
-        this.vertices = [];
-        this.indices = [];
-        this.normals = [];
-
-        var ang = 0;
-        var alphaAng = 2*Math.PI/this.slices;
-
-        for(var i = 0; i < this.slices; i++){
-            // All vertices have to be declared for a given face
-            // even if they are shared with others, as the normals 
-            // in each face will be different
-
-            var sa=Math.sin(ang);
-            var saa=Math.sin(ang+alphaAng);
-            var ca=Math.cos(ang);
-            var caa=Math.cos(ang+alphaAng);
-
-            this.vertices.push(0,2,0);
-            this.vertices.push(ca, 0, -sa);
-            this.vertices.push(caa, 0, -saa);
-
-            // triangle normal computed by cross product of two edges
-            var normal= [
-                saa-sa,
-                ca*saa-sa*caa,
-                caa-ca
-            ];
-
-            // normalization
-            var nsize=Math.sqrt(
-                normal[0]*normal[0]+
-                normal[1]*normal[1]+
-                normal[2]*normal[2]
-                );
-            normal[0]/=nsize;
-            normal[1]/=nsize;
-            normal[2]/=nsize;
-
-            // push normal once for each vertex of this triangle
-            this.normals.push(...normal);
-            this.normals.push(...normal);
-            this.normals.push(...normal);
-
-            this.indices.push(3*i, (3*i+1) , (3*i+2) );
-
-            ang+=alphaAng;
-        }
-
-        this.primitiveType = this.scene.gl.TRIANGLES;
-        this.initGLBuffers();
+        this.autopilot = false;
+        this.auto_x = 0;
+        this.auto_z = 0;
+        this.elapsedTime = 0;
+        this.totalTime = 0;
+        this.time = 0;
+        
+        this.blimp = new MyBlimp(scene, 16,8);
+        this.flag = new MyFlag(scene);
+        
+        this.initBuffers();
     }
     
     updateBuffers(complexity){
@@ -75,10 +34,38 @@ class MyVehicle extends CGFobject {
         this.initBuffers();
         this.initNormalVizBuffers();
     }
+    
+    autoPilot(){
+        this.autopilot = true;
+        this.auto_angle = 0;
+        this.auto_x = this.x + 5*Math.cos(-this.vehicleAngle*Math.PI/180);
+        this.auto_z = this.z + 5*Math.sin(-this.vehicleAngle*Math.PI/180);
+    }
 
-    update(){
-        this.x += this.speed * Math.sin(this.vehicleAngle*Math.PI/180);
-        this.z += this.speed * Math.cos(this.vehicleAngle*Math.PI/180);
+    update(t){
+        if (this.autopilot){
+            if (this.time == 0){
+    		    this.time = t;
+    	    }
+    	    this.elapsedTime = (t - this.time) / 1000.0;
+    	    this.totalTime += this.elapsedTime;
+    	    this.time = t;
+    	    this.auto_angle += 2*Math.PI*this.elapsedTime/5;
+    	    console.log(this.totalTime);
+    	    if (this.auto_angle >= 2*Math.PI){
+                this.elapsedTime = 0;
+                this.time = 0;
+                this.totalTime = 0;
+                this.auto_angle = 0;
+                this.autopilot = false;  
+    	    }
+        }
+        else{
+            this.x += this.speed * Math.sin(this.vehicleAngle*Math.PI/180);
+            this.z += this.speed * Math.cos(this.vehicleAngle*Math.PI/180);
+        }
+        this.blimp.propeller1.setAngle(this.speed*t);
+        this.blimp.propeller2.setAngle(-this.speed*t);
     }
 
     turn(angle) {
@@ -88,6 +75,9 @@ class MyVehicle extends CGFobject {
         else{
             this.vehicleAngle += angle;
         }
+        this.vehicleAngle %= 360;
+        this.blimp.stabilizer1.setAngle(-angle*1.5);
+        this.blimp.stabilizer2.setAngle(-angle*1.5);
     }
 
     accelerate(acceleration) {
@@ -98,27 +88,38 @@ class MyVehicle extends CGFobject {
         this.x = 0;
         this.z = 0;
         this.vehicleAngle = 0;
+        this.elapsedTime = 0;
+        this.totalTime = 0;
+        this.time = 0;
+        this.auto_angle = 0;
+        this.autopilot = false; 
         this.speed = 0;
+        this.blimp.stabilizer1.setAngle(0);
+        this.blimp.stabilizer2.setAngle(0);
     }
     
     display(){
         this.scene.pushMatrix();
-        
-        this.scene.defaultMaterial.apply();
-        this.scene.scale(this.scene.scaleFactor,this.scene.scaleFactor,this.scene.scaleFactor);
-
+        this.scene.translate(0,10,0);
+        if (this.autopilot){
+            this.scene.translate(this.auto_x, 0, this.auto_z);
+            this.scene.rotate(this.auto_angle, 0, 1, 0);
+            this.scene.translate(-this.auto_x, 0, -this.auto_z);
+        }
         this.scene.translate(this.x, this.y, this.z);
         this.scene.rotate(this.vehicleAngle*Math.PI/180.0, 0, 1, 0);
-
-        this.scene.translate(0,0,-1);
-        this.scene.rotate(90.0*Math.PI/180.0, 1, 0, 0);
-        super.display();
-
+        //this.scene.scale(this.scene.scaleFactor,this.scene.scaleFactor,this.scene.scaleFactor);
+        this.scene.pushMatrix();
+        this.blimp.display();
         this.scene.popMatrix();
     }
 
     updateBuffers(complexity){
         this.slices = 3 + Math.round(9 * complexity); //complexity varies 0-1, so slices varies 3-12
+        
+        this.sphere.updateSlices(this.slices);
+        this.sphere.updateStacks(this.stacks);
+        this.cylinder.updateSlices(this.slices);
 
         // reinitialize buffers
         this.initBuffers();
