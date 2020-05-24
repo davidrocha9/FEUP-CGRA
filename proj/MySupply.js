@@ -10,7 +10,7 @@ class MySupply extends CGFobject {
 	    this.box = new MySupplyCrate(this.scene);
         this.state=SupplyStates.INACTIVE;
         this.x=0;
-        this.y=5;
+        this.y=-7;
         this.z=0;
         this.time = 0;
         this.elapsedTime = 0;
@@ -24,10 +24,11 @@ class MySupply extends CGFobject {
 			this.elapsedTime = (t - this.time) / 1000.0;
 			this.totalTime += this.elapsedTime;
 			this.time = t;
-			if (this.y < 0.3 - 23.8){
+			if (this.y < - 23.8){
 				this.land();
 			}
-        	this.y -= (this.elapsedTime*(28/3.0));
+        	this.y -= (this.elapsedTime*(17/3.0));
+        	console.log(this.totalTime);
         }
     }
 
@@ -48,7 +49,7 @@ class MySupply extends CGFobject {
     	this.elapsedTime = 0;
     	this.time = 0;
     	this.totalTime = 0;
-		this.y = 5;
+		this.y = -7;
 		this.state = SupplyStates.INACTIVE;
     }
 

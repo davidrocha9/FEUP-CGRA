@@ -111,7 +111,7 @@ class MyVehicle extends CGFobject {
     
     display(){
         this.scene.pushMatrix();
-        this.scene.translate(0,5,0);
+        this.scene.translate(0,-7,0);
         /*if (this.autopilot){
             this.scene.translate(this.auto_x, 0, this.auto_z);
             this.scene.rotate(this.auto_angle, 0, 1, 0);
