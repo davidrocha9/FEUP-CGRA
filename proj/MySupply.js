@@ -24,11 +24,10 @@ class MySupply extends CGFobject {
 			this.elapsedTime = (t - this.time) / 1000.0;
 			this.totalTime += this.elapsedTime;
 			this.time = t;
-			if (this.y < 0.2 - 23.8){
+			if (this.y < 0.3 - 23.8){
 				this.land();
 			}
         	this.y -= (this.elapsedTime*(33/3.0));
-        	console.log(this.totalTime);
         }
     }
 
@@ -43,6 +42,14 @@ class MySupply extends CGFobject {
     	this.elapsedTime = 0;
     	this.time = 0;
     	this.totalTime = 0;
+    }
+    
+    reset(){
+    	this.elapsedTime = 0;
+    	this.time = 0;
+    	this.totalTime = 0;
+		this.y = 10;
+		this.state = SupplyStates.INACTIVE;
     }
 
     display(){

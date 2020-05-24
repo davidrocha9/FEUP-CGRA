@@ -31,6 +31,22 @@ class MyBlimp extends CGFobject {
         this.propeller1 = new MyPropeller(this.scene);
         this.propeller2 = new MyPropeller(this.scene); 
         
+        this.goodyear = new CGFappearance(scene);
+        this.goodyear.setAmbient(1, 1, 1, 1.0);
+        this.goodyear.setDiffuse(1, 1, 1, 1.0);
+        this.goodyear.setSpecular(1, 1, 1, 1.0);
+        this.goodyear.setShininess(10.0);
+        this.goodyear.loadTexture('images/goodyear.png');
+        this.goodyear.setTextureWrap('REPEAT', 'REPEAT');
+
+        this.blue = new CGFappearance(scene);
+        this.blue.setAmbient(1, 1, 1, 1.0);
+        this.blue.setDiffuse(1, 1, 1, 1.0);
+        this.blue.setSpecular(1, 1, 1, 1.0);
+        this.blue.setShininess(10.0);
+        this.blue.loadTexture('images/blue.png');
+        this.blue.setTextureWrap('REPEAT', 'REPEAT');
+
         this.time = 0.0;
         this.initBuffers();
     }
@@ -57,7 +73,7 @@ class MyBlimp extends CGFobject {
         }
 
         this.scene.scale(3,3,3);
-        this.scene.defaultMaterial.apply();
+        this.goodyear.apply();
         
         this.scene.scale(0.5,0.5,1);
         this.sphere.display();
@@ -66,10 +82,9 @@ class MyBlimp extends CGFobject {
         
         //Cockpit
         this.scene.pushMatrix();
-        this.scene.scale(3,3,3);
+        this.scene.defaultMaterial.apply();
         this.scene.rotate(90.0*Math.PI/180.0, 1, 0, 0);
-        this.scene.scale(0.1,0.1,0.1);
-        this.scene.scale(1,5,1);
+        this.scene.scale(0.3,1.5,0.3);
         this.scene.translate(0,-0.5,5);
         this.cylinder.display();
         this.scene.popMatrix();

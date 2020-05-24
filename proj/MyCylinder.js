@@ -7,6 +7,7 @@ class MyCylinder extends CGFobject {
     constructor(scene, slices) {
       super(scene);
       this.slices = slices;
+      this.texCoords = [];
       this.initBuffers();
     }
   
@@ -37,13 +38,15 @@ class MyCylinder extends CGFobject {
             ang += alphaAng;
         }
         
+        //this.texCoords.push(longitude / this.longDivs, latitude / this.latDivs);
+
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     }
 
     display() {
     this.scene.pushMatrix();
-    this.scene.defaultMaterial.apply();
+    //this.scene.defaultMaterial.apply();
     this.scene.popMatrix();
     super.display();
   }

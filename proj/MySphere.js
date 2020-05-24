@@ -65,7 +65,7 @@ class MySphere extends CGFobject {
         theta += thetaInc;
 
         //--- Texture Coordinates
-        this.texCoords.push(longitude / this.longDivs, latitude / this.latDivs);
+        this.texCoords.push(-3.02*Math.PI + longitude / this.longDivs, latitude / this.latDivs);
         
       }
       phi += phiInc;
@@ -78,9 +78,9 @@ class MySphere extends CGFobject {
 
   display() {
     this.scene.pushMatrix();
-    this.scene.defaultMaterial.apply();
-    if (this.scene.displayEarth == true)
+    if (this.scene.displayEarth == true)  
       this.scene.sceneMaterial.apply();
+    //this.scene.defaultMaterial.apply();
     this.scene.popMatrix();
     super.display();
    }

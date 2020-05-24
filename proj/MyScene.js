@@ -32,7 +32,8 @@ class MyScene extends CGFscene {
         this.cylinder = new MyCylinder(this, 16);
         this.cube = new MyCubeQuad(this);
         this.vehicle = new MyVehicle(this, this.slices, this.stacks);
-        this.terrain=new MyTerrain(this);
+        this.terrain = new MyTerrain(this);
+        this.billboard = new MyBillboard(this);
         this.supplies = [
             new MySupply(this),
             new MySupply(this),
@@ -55,7 +56,7 @@ class MyScene extends CGFscene {
         this.selectedObject = 2;
         this.selectedTexture = 0;
         this.speedFactor = 1;
-        this.scaleFactor = 0.5;
+        this.scaleFactor = 1;
 
         //Earth Material for the Sphere
         this.sceneMaterial = new CGFappearance(this);
@@ -95,7 +96,8 @@ class MyScene extends CGFscene {
     }
     initCameras() {
         //this.camera = new CGFcamera(0.5, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(40, 64, 40), vec3.fromValues(0, 24, 0));
+        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(35, 59, 35), vec3.fromValues(0, 24, 0));
+        //this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(10, 10, 10), vec3.fromValues(0, 0, 0));
     }
     setDefaultAppearance() {
         this.setAmbient(0.2, 0.4, 0.8, 1.0);
@@ -110,7 +112,14 @@ class MyScene extends CGFscene {
         // Check for key codes e.g. in https://keycode.info/
         if (this.gui.isKeyPressed("KeyP")) {
             text+=" P "
-            this.vehicle.autoPilot();
+            if (this.vehicle.autopilot){
+                this.vehicle.autopilot = false;
+                console.log("aqui agora");
+            }
+            else{
+                this.vehicle.autoPilot();
+                console.log("aqui");
+            }
             keysPressed = true;
         }
         
@@ -119,11 +128,14 @@ class MyScene extends CGFscene {
                 text+=" W ";
                 this.objects[2].accelerate(0.3*this.speedFactor);
                 keysPressed=true;
+                console.log(this.vehicle.speed);
             }
             if(this.gui.isKeyPressed("KeyS")){
                 text+=" S ";
-                this.objects[2].accelerate(-0.3*this.speedFactor);
+                if(this.vehicle.speed >= 0)
+                    this.objects[2].accelerate(-0.3*this.speedFactor);
                 keysPressed=true;
+                console.log(this.vehicle.speed);
             }
             else if(this.gui.isKeyPressed("KeyA")){
                 text+=" A ";
@@ -134,6 +146,16 @@ class MyScene extends CGFscene {
                 text+=" D ";
                 this.objects[2].turn(20);
                 keysPressed=true;
+            }
+            else if (this.gui.isKeyPressed("KeyL")) {
+                text+=" L ";
+                if (this.supplyNumber < 5){
+                    this.supplies[this.supplyNumber].drop(this.vehicle.x, this.vehicle.z);
+                    this.supplies[this.supplyNumber].display();
+                    this.supplyNumber++;
+                }
+                this.billboard.update();
+                keysPressed = true;
             }
             else{
                 this.vehicle.blimp.stabilizer1.setAngle(0);
@@ -146,20 +168,10 @@ class MyScene extends CGFscene {
             keysPressed = true;
             this.vehicle.autopilot = false;
             for (var i=0 ; i<5; i++){
-                this.supplies[i].y = 10;
-                this.supplies[i].state = SupplyStates.INACTIVE;
+                this.supplies[i].reset();
             }
+            this.billboard.reset();
             this.supplyNumber = 0;
-        }
-
-        if (this.gui.isKeyPressed("KeyL")) {
-            text+=" L ";
-            if (this.supplyNumber < 5){
-                this.supplies[this.supplyNumber].drop(this.vehicle.x, this.vehicle.z);
-                this.supplies[this.supplyNumber].display();
-                this.supplyNumber++;
-            }
-            keysPressed = true;
         }
         
         if(keysPressed){
@@ -210,7 +222,7 @@ class MyScene extends CGFscene {
             this.objects[this.selectedObject].display();
         this.popMatrix();
         
-         if (this.displayCubeMap == true)
+        if (this.displayCubeMap == true)
             this.cube.display();
 
         this.terrain.display();
@@ -219,6 +231,8 @@ class MyScene extends CGFscene {
             this.supplies[i].display();
         }
         
+        this.billboard.display();
+
         this.popMatrix();
         // ---- END Primitive drawing section
     }

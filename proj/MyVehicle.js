@@ -23,7 +23,8 @@ class MyVehicle extends CGFobject {
         
         this.blimp = new MyBlimp(scene, 16,8);
         this.flag = new MyFlag(scene);
-        
+        this.rope = new MyCylinder(scene, 16);
+
         this.initBuffers();
     }
     
@@ -36,10 +37,18 @@ class MyVehicle extends CGFobject {
     }
     
     autoPilot(){
-        this.autopilot = true;
-        this.auto_angle = 0;
-        this.auto_x = this.x + 5*Math.cos(-this.vehicleAngle*Math.PI/180);
-        this.auto_z = this.z + 5*Math.sin(-this.vehicleAngle*Math.PI/180);
+        if (this.autopilot){
+            this.autopilot = false;
+        }
+        else{
+            this.autopilot = true;
+            this.auto_x = this.x + 5*Math.sin((this.vehicleAngle + 90)*Math.PI/180);
+            this.auto_z = this.z + 5*Math.cos((this.vehicleAngle + 90)*Math.PI/180);
+            this.time = 0.0;
+            this.elapsedTime = 0.0;
+            this.blimp.stabilizer1.setAngle(-20*1.5);
+            this.blimp.stabilizer2.setAngle(-20*1.5);
+        }
     }
 
     update(t){
@@ -48,22 +57,21 @@ class MyVehicle extends CGFobject {
     		    this.time = t;
     	    }
     	    this.elapsedTime = (t - this.time) / 1000.0;
-    	    this.totalTime += this.elapsedTime;
+    	    //this.totalTime += this.elapsedTime;
     	    this.time = t;
-    	    this.auto_angle += 2*Math.PI*this.elapsedTime/5;
-    	    console.log(this.totalTime);
-    	    if (this.auto_angle >= 2*Math.PI){
-                this.elapsedTime = 0;
-                this.time = 0;
-                this.totalTime = 0;
-                this.auto_angle = 0;
-                this.autopilot = false;  
-    	    }
+    	    this.vehicleAngle += 360.0*this.elapsedTime/5;
+    	    this.x = -5 * Math.cos(this.vehicleAngle * Math.PI/180) + this.auto_x ;
+            this.z = 5 * Math.sin(this.vehicleAngle * Math.PI/180) + this.auto_z ;
+    	    //console.log(this.totalTime);
         }
         else{
             this.x += this.speed * Math.sin(this.vehicleAngle*Math.PI/180);
             this.z += this.speed * Math.cos(this.vehicleAngle*Math.PI/180);
         }
+        
+        if (this.speed != 0)
+            this.flag.update(this.speed, t / 100 % 1000);
+
         this.blimp.propeller1.setAngle(this.speed*t);
         this.blimp.propeller2.setAngle(-this.speed*t);
     }
@@ -81,7 +89,10 @@ class MyVehicle extends CGFobject {
     }
 
     accelerate(acceleration) {
-        this.speed += acceleration;
+        if (this.speed + acceleration > 0)
+            this.speed += acceleration;
+        else
+            this.speed = 0;
     }
 
     reset() {
@@ -101,16 +112,30 @@ class MyVehicle extends CGFobject {
     display(){
         this.scene.pushMatrix();
         this.scene.translate(0,10,0);
-        if (this.autopilot){
+        /*if (this.autopilot){
             this.scene.translate(this.auto_x, 0, this.auto_z);
             this.scene.rotate(this.auto_angle, 0, 1, 0);
             this.scene.translate(-this.auto_x, 0, -this.auto_z);
-        }
+        }*/
         this.scene.translate(this.x, this.y, this.z);
         this.scene.rotate(this.vehicleAngle*Math.PI/180.0, 0, 1, 0);
-        //this.scene.scale(this.scene.scaleFactor,this.scene.scaleFactor,this.scene.scaleFactor);
+        this.scene.scale(this.scene.scaleFactor,this.scene.scaleFactor,this.scene.scaleFactor);
         this.scene.pushMatrix();
         this.blimp.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(0,0,-3.5);
+        this.scene.rotate(Math.PI/2, 0, 1, 0);
+        this.scene.scale(2,1.25,1);
+        this.flag.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.scale(0.005,0.005,1);
+        this.scene.translate(0,0,-2.5);
+        this.scene.rotate(Math.PI/2, 1, 0, 0);
+        this.rope.display();
         this.scene.popMatrix();
     }
 

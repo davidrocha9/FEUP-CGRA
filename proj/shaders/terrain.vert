@@ -16,9 +16,8 @@ uniform sampler2D uSampler2;
 
 void main() {
 	vTextureCoord = aTextureCoord;
-
-    vec3 offset = texture2D(uSampler2, vTextureCoord).g * 8.0 * aVertexNormal;
-
-	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + offset, 1.0);
-    
+	
+	vec3 offset = texture2D(uSampler2, vTextureCoord).g * aVertexNormal; 
+	
+	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + offset, 1.0);  
 }
