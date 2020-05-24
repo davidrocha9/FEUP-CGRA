@@ -20,7 +20,7 @@ class MyCubeQuad extends CGFobject {
         this.quadFront.setDiffuse(1, 1, 1, 1.0);
         this.quadFront.setSpecular(1, 1, 1, 1.0);
         this.quadFront.setShininess(10.0);
-        this.quadFront.loadTexture('images/split_cubemap/front.png');
+        this.quadFront.loadTexture('images/split_sky/front.png');
         this.quadFront.setTextureWrap('REPEAT', 'REPEAT');
 
         this.quadBack = new CGFappearance(scene);
@@ -28,7 +28,7 @@ class MyCubeQuad extends CGFobject {
         this.quadBack.setDiffuse(1, 1, 1, 1.0);
         this.quadBack.setSpecular(1, 1, 1, 1.0);
         this.quadBack.setShininess(10.0);
-        this.quadBack.loadTexture('images/split_cubemap/back.png');
+        this.quadBack.loadTexture('images/split_sky/back.png');
         this.quadBack.setTextureWrap('REPEAT', 'REPEAT');
 
         this.quadLeft = new CGFappearance(scene);
@@ -36,7 +36,7 @@ class MyCubeQuad extends CGFobject {
         this.quadLeft.setDiffuse(1, 1, 1, 1.0);
         this.quadLeft.setSpecular(1, 1, 1, 1.0);
         this.quadLeft.setShininess(10.0);
-        this.quadLeft.loadTexture('images/split_cubemap/left.png');
+        this.quadLeft.loadTexture('images/split_sky/left.png');
         this.quadLeft.setTextureWrap('REPEAT', 'REPEAT');
 
         this.quadRight = new CGFappearance(scene);
@@ -44,7 +44,7 @@ class MyCubeQuad extends CGFobject {
         this.quadRight.setDiffuse(1, 1, 1, 1.0);
         this.quadRight.setSpecular(1, 1, 1, 1.0);
         this.quadRight.setShininess(10.0);
-        this.quadRight.loadTexture('images/split_cubemap/right.png');
+        this.quadRight.loadTexture('images/split_sky/right.png');
         this.quadRight.setTextureWrap('REPEAT', 'REPEAT');
 
         this.quadTop = new CGFappearance(scene);
@@ -52,7 +52,7 @@ class MyCubeQuad extends CGFobject {
         this.quadTop.setDiffuse(1, 1, 1, 1.0);
         this.quadTop.setSpecular(1, 1, 1, 1.0);
         this.quadTop.setShininess(10.0);
-        this.quadTop.loadTexture('images/split_cubemap/top.png');
+        this.quadTop.loadTexture('images/split_sky/top.png');
         this.quadTop.setTextureWrap('REPEAT', 'REPEAT');
 
         this.quadBottom = new CGFappearance(scene);
@@ -60,7 +60,7 @@ class MyCubeQuad extends CGFobject {
         this.quadBottom.setDiffuse(1, 1, 1, 1.0);
         this.quadBottom.setSpecular(1, 1, 1, 1.0);
         this.quadBottom.setShininess(10.0);
-        this.quadBottom.loadTexture('images/split_cubemap/bottom.png');
+        this.quadBottom.loadTexture('images/split_sky/bottom.png');
         this.quadBottom.setTextureWrap('REPEAT', 'REPEAT');
     }
 
@@ -143,6 +143,14 @@ class MyCubeQuad extends CGFobject {
             this.quadBack.loadTexture('images/split_desert/back.png');
             this.quadTop.loadTexture('images/split_desert/top.png');
             this.quadBottom.loadTexture('images/split_desert/bottom.png');
+        }
+        else if(this.scene.selectedTexture==3){
+            this.quadLeft.loadTexture('images/split_sky/left.png');
+            this.quadRight.loadTexture('images/split_sky/right.png');
+            this.quadFront.loadTexture('images/split_sky/front.png');
+            this.quadBack.loadTexture('images/split_sky/back.png');
+            this.quadTop.loadTexture('images/split_sky/top.png');
+            this.quadBottom.loadTexture('images/split_sky/bottom.png');
         }
     }
 }

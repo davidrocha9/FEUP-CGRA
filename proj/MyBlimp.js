@@ -82,7 +82,8 @@ class MyBlimp extends CGFobject {
         
         //Cockpit
         this.scene.pushMatrix();
-        this.scene.defaultMaterial.apply();
+        //this.scene.defaultMaterial.apply();
+        this.blue.apply();
         this.scene.rotate(90.0*Math.PI/180.0, 1, 0, 0);
         this.scene.scale(0.3,1.5,0.3);
         this.scene.translate(0,-0.5,5);

@@ -54,7 +54,7 @@ class MyScene extends CGFscene {
         this.displayObject = true;
         this.displayCubeMap = true;
         this.selectedObject = 2;
-        this.selectedTexture = 0;
+        this.selectedTexture = 3;
         this.speedFactor = 1;
         this.scaleFactor = 1;
 
@@ -72,12 +72,14 @@ class MyScene extends CGFscene {
             new CGFtexture(this, "images/cubemap.png"),
             new CGFtexture(this, "images/forest.png"),
             new CGFtexture(this, "images/desert.png"),
+            new CGFtexture(this, "images/sky.png"),
         ];
 
         this.textureList={
             'Cubemap': 0,
             'Forest': 1,
             'Desert': 2,
+            'Sky': 3
         };
 
         this.defaultMaterial = new CGFappearance(this);
@@ -95,9 +97,8 @@ class MyScene extends CGFscene {
         this.lights[0].update();
     }
     initCameras() {
-        //this.camera = new CGFcamera(0.5, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(35, 59, 35), vec3.fromValues(0, 24, 0));
-        //this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(10, 10, 10), vec3.fromValues(0, 0, 0));
+        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(35, 60, 50), vec3.fromValues(0, 20, 0));
+        //this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(20, 30, 0), vec3.fromValues(0, 30, 0));
     }
     setDefaultAppearance() {
         this.setAmbient(0.2, 0.4, 0.8, 1.0);
@@ -114,11 +115,9 @@ class MyScene extends CGFscene {
             text+=" P "
             if (this.vehicle.autopilot){
                 this.vehicle.autopilot = false;
-                console.log("aqui agora");
             }
             else{
                 this.vehicle.autoPilot();
-                console.log("aqui");
             }
             keysPressed = true;
         }
@@ -128,14 +127,12 @@ class MyScene extends CGFscene {
                 text+=" W ";
                 this.objects[2].accelerate(0.3*this.speedFactor);
                 keysPressed=true;
-                console.log(this.vehicle.speed);
             }
             if(this.gui.isKeyPressed("KeyS")){
                 text+=" S ";
                 if(this.vehicle.speed >= 0)
                     this.objects[2].accelerate(-0.3*this.speedFactor);
                 keysPressed=true;
-                console.log(this.vehicle.speed);
             }
             else if(this.gui.isKeyPressed("KeyA")){
                 text+=" A ";
@@ -212,7 +209,7 @@ class MyScene extends CGFscene {
             this.axis.display();
 
         this.setDefaultAppearance();
-
+        
         // ---- BEGIN Primitive drawing section
         this.pushMatrix();    
         this.translate(0,24,0);

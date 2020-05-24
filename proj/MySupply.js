@@ -7,10 +7,10 @@ const SupplyStates = {
 class MySupply extends CGFobject {
 	constructor(scene) {
 		super(scene);
-	    this.box = new MyUnitCubeQuad(this.scene);
+	    this.box = new MySupplyCrate(this.scene);
         this.state=SupplyStates.INACTIVE;
         this.x=0;
-        this.y=10;
+        this.y=5;
         this.z=0;
         this.time = 0;
         this.elapsedTime = 0;
@@ -27,7 +27,7 @@ class MySupply extends CGFobject {
 			if (this.y < 0.3 - 23.8){
 				this.land();
 			}
-        	this.y -= (this.elapsedTime*(33/3.0));
+        	this.y -= (this.elapsedTime*(28/3.0));
         }
     }
 
@@ -48,7 +48,7 @@ class MySupply extends CGFobject {
     	this.elapsedTime = 0;
     	this.time = 0;
     	this.totalTime = 0;
-		this.y = 10;
+		this.y = 5;
 		this.state = SupplyStates.INACTIVE;
     }
 
